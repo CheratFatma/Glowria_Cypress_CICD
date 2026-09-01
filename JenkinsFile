@@ -86,9 +86,11 @@ pipeline {
 
                 stage('check allure results') {
                     steps {
-                        sh '''
+                         sh '''
                             echo "=== ALLURE RESULTS ==="
                             ls -la allure-results
+                            echo "=== RESULT JSON ==="
+                            cat allure-results/*-result.json
                             echo "=== END ==="
                         '''
                     }
