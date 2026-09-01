@@ -147,6 +147,11 @@ pipeline {
 
                 if (params.MOCHAWESOME) {
 
+                    sh '''
+                        rm -rf cypress/reports
+                        mkdir -p cypress/reports
+                    '''
+
                     unstash 'mochawesome-report'
 
                     archiveArtifacts(
