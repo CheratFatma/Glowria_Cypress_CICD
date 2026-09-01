@@ -1,0 +1,120 @@
+pipeline {
+
+    agent any
+
+    parameters {
+        booleanParam(name: 'ALLURE',defaultValue: false,description: 'Generation du rapport Allure')
+        booleanParam(name: 'MOCHAWESOME',defaultValue: false,description: 'Generation du rapport Mochawesome')
+        booleanParam(name: 'TAG',defaultValue: false,description: 'Lancer avec le tag @glowria')
+    }
+
+    stages {
+
+        stage('global stage') {
+
+            agent {
+                docker {
+                    image 'cypress/included:14.5.4'
+                    args '-u root'
+                }
+            }
+
+            stages {
+
+                stage('installer dependencies') {
+                    steps {
+                        sh 'npm ci'
+                    }
+                }
+
+                stage('clean reports') {
+                    steps {
+                        sh '''
+                            echo "Suppression des anciens rapports..."
+
+                            rm -rf allure-results
+                            rm -rf cypress/reports
+
+                            mkdir -p allure-results
+                            mkdir -p cypress/reports
+
+                            echo "Dossiers nettoyes avec succes"
+                        '''
+                    }
+                }
+
+                stage('run Cypress tests') {
+                    steps {
+                        script {
+
+                            if (params.TAG && params.ALLURE) {
+
+                                sh 'npx cypress run --env grepTags=@glowria,allure=true'
+
+                            } else if (params.TAG) {
+
+                                sh 'npx cypress run --env grepTags=@glowria'
+
+                            } else if (params.ALLURE) {
+
+                                sh 'npx cypress run --env allure=true'
+
+                            } else {
+
+                                sh 'npx cypress run'
+
+                            }
+                        }
+                    }
+                }
+
+                stage('generate Mochawesome report') {
+
+                    when {
+                        expression {
+                            return params.MOCHAWESOME
+                        }
+                    }
+
+                    steps {
+                        sh '''
+                            npm run report:merge
+                            npm run report:generate
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+
+        always {
+
+            script {
+
+                if (params.ALLURE) {
+
+                    archiveArtifacts(
+                        artifacts: 'allure-results/**/*',
+                        allowEmptyArchive: true
+                    )
+
+                    allure(
+                        includeProperties: false,
+                        jdk: '',
+                        results: [[path: 'allure-results/']]
+                    )
+                }
+
+                if (params.MOCHAWESOME) {
+
+                    archiveArtifacts(
+                        artifacts: 'cypress/reports/**/*',
+                        allowEmptyArchive: true
+                    )
+                }
+            }
+        }
+    }
+}
