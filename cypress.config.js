@@ -18,7 +18,7 @@ module.exports = defineConfig({
 
   //PLUGIN ALLURE
   env: {
-        allure: true,
+        allure: false,
         allureResultsPath: 'allure-results',
         allureReuseAfterSpec: true,
   },
