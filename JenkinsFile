@@ -84,27 +84,20 @@ pipeline {
                     }
                 }
 
-                stage('check allure results') {
-                    steps {
-                        sh '''
-                            echo "=== ALLURE RESULTS ==="
-                            ls -la allure-results
+                stage('check allure results') { 
+                    steps { 
+                        sh ''' 
+                            echo "=== ALLURE RESULTS ===" 
+                            ls -la allure-results 
 
-                            echo "=== RESULT JSON ==="
-                            cat allure-results/*-result.json
+                            echo "=== RESULT JSON ===" 
+                            cat allure-results/*-result.json 
 
-                            echo "=== GENERATE ALLURE ==="
-                            npx allure generate allure-results -o allure-report --clean
-
-                            echo "=== ALLURE REPORT GENERATED ==="
-                            ls -la allure-report
-
-                            echo "=== END ==="
-                        '''
-                    }
+                            echo "=== END ===" 
+                        ''' 
+                    } 
                 }
-
-                
+                fix
             }
         }
     }
