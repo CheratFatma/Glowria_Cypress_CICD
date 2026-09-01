@@ -83,6 +83,16 @@ pipeline {
                         '''
                     }
                 }
+
+                stage('check allure results') {
+                    steps {
+                        sh '''
+                            echo "=== ALLURE RESULTS ==="
+                            ls -la allure-results
+                            echo "=== END ==="
+                        '''
+                    }
+                }
             }
         }
     }
