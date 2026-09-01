@@ -80,6 +80,16 @@ pipeline {
                         sh '''
                             npm run report:merge
                             npm run report:generate
+
+                            echo "=== MOCHAWESOME REPORT ==="
+                            ls -la cypress/reports
+
+                            echo "=== CHANGEMENT DES PERMISSIONS ==="
+                            chown -R 1000:1000 cypress/reports
+                            chmod -R 755 cypress/reports
+
+                            echo "=== RAPPORT PRET ==="
+                            ls -la cypress/reports
                         '''
                         stash name: 'mochawesome-report', includes: 'cypress/reports/**/*'
 
