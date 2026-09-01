@@ -81,6 +81,8 @@ pipeline {
                             npm run report:merge
                             npm run report:generate
                         '''
+                        stash name: 'mochawesome-report', includes: 'cypress/reports/**/*'
+
                     }
                 }
 
@@ -134,6 +136,8 @@ pipeline {
                 }
 
                 if (params.MOCHAWESOME) {
+
+                    unstash 'mochawesome-report'
 
                     archiveArtifacts(
                         artifacts: 'cypress/reports/**/*',
