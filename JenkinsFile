@@ -148,7 +148,6 @@ pipeline {
                         reportFiles: 'report.html',
                         reportName: 'Mochawesome Report'
                     ])
-}
                 }
             }
         }
