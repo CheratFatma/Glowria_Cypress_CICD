@@ -119,6 +119,8 @@ pipeline {
 
                 if (params.ALLURE) {
 
+                    unstash 'allure-results'
+
                     archiveArtifacts(
                         artifacts: 'allure-results/**/*',
                         allowEmptyArchive: true
