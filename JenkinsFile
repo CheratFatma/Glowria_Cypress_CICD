@@ -98,37 +98,37 @@ pipeline {
                     } 
                 }
             }
+            post {
+                always {
+
+                    script {
+
+                        if (params.ALLURE) {
+
+                            archiveArtifacts(
+                                artifacts: 'allure-results/**/*',
+                                allowEmptyArchive: true
+                            )
+
+                            allure(
+                                includeProperties: false,
+                                jdk: '',
+                                results: [[path: 'allure-results']]
+                            )
+                        }
+
+                        if (params.MOCHAWESOME) {
+
+                            archiveArtifacts(
+                                artifacts: 'cypress/reports/**/*',
+                                allowEmptyArchive: true
+                            )
+                        }
+                    }
+                }
+            }       
         }
     }
 
-    post {
-
-        always {
-
-            script {
-
-                if (params.ALLURE) {
-
-                    archiveArtifacts(
-                        artifacts: 'allure-results/**/*',
-                        allowEmptyArchive: true
-                    )
-
-                    allure(
-                        includeProperties: false,
-                        jdk: '',
-                        results: [[path: 'allure-results']]
-                    )
-                }
-
-                if (params.MOCHAWESOME) {
-
-                    archiveArtifacts(
-                        artifacts: 'cypress/reports/**/*',
-                        allowEmptyArchive: true
-                    )
-                }
-            }
-        }
-    }
+   
 }
